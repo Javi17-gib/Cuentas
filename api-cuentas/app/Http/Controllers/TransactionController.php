@@ -32,7 +32,20 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request -> validate([
+            'ammount'=>'required|numeric',
+            'type'=>'required|string',
+            'description'=>'required|string',
+            'user_id'=>'required',
+            'category_id'=>'required',
+            'account_id'=>'required',
+        ]);
+        $data = Transaction::create($validated);
+        return response()->json([
+            "status"=>"ok",
+            "message"=>"Dato Insertado Correctamente",
+            "data"=>$data
+        ]);
     }
 
     /**
@@ -40,7 +53,18 @@ class TransactionController extends Controller
      */
     public function show(string $id)
     {
-        //
+         $data =  Transaction::find($id);
+        if($data){
+           return response()->json([
+            "status"=>"ok",
+            "message"=>"Cuenta Encontrada",
+            "data" =>$data
+        ],200);  
+        }
+        return response()->json([
+            "status"=>"error",
+            "message"=>"Cuenta no encontrada",
+        ],400);
     }
 
     /**
@@ -56,7 +80,23 @@ class TransactionController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+         $validated = $request -> validate([
+            'ammount'=>'required|numeric',
+            'type'=>'required|string',
+            'description'=>'required|string',
+            'user_id'=>'required',
+            'category_id'=>'required',
+            'account_id'=>'required',
+        ]);
+        $data = Transaction::findOrFail($id);
+        $data ->update($validated);
+
+        //$data = Account::create($validated);
+        return response()->json([
+            "status"=>"ok",
+            "message"=>"Dato Actualizado Correctamente",
+            "data"=>$data
+        ]);
     }
 
     /**
@@ -64,6 +104,13 @@ class TransactionController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+         $data =  Transaction::find($id);
+        if($data){
+            $data->delete();
+        }
+        return response()->json([
+            "status"=>"ok",
+            "message"=>"Dato Eliminado Correctamente",
+        ]);
     }
 }
